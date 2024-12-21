@@ -1,0 +1,29 @@
+server:
+  port: 8080 # Puerto del API Gateway
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: ms-security # Ruta para el microservicio ms-security
+          uri: lb://MS-SECURITY # Usa el balanceador de carga para encontrar instancias en Eureka
+          predicates:
+            - Path=/users/** # Rutas que comienzan con /users
+
+      default-filters:
+        - PreserveHostHeader # Mantiene el encabezado del host original
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # URL del servidor Eureka
+    fetch-registry: true # Habilita el uso del registro de servicios de Eureka
+    register-with-eureka: true # Registra este servicio en Eureka
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG # Logs detallados para depuración
+    reactor.netty: DEBUG
